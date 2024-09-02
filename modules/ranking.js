@@ -95,6 +95,7 @@ const calculateFinalRanking = (groups) => {
     ];
 
     finalRanking.sort((a, b) => a.finalRank - b.finalRank);
+    finalRanking.pop();
 
     return finalRanking;
 };
