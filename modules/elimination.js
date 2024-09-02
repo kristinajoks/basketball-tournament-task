@@ -9,6 +9,14 @@ const assignTeamsToBuckets = (finalRanking) => {
     };
 };
 
+const prepareEliminationPhase = (groups, finalRanking, assignTeamsToBuckets) => {
+    const isoCodeGroups = extractISOCodeGroups(groups);
+    const buckets = assignTeamsToBuckets(finalRanking);
+    console.log("Šeširi:");
+    console.log(buckets);
+    return { isoCodeGroups, buckets };
+};
+
 const teamsInSameGroup = (team1, team2, isoCodeGroups) => {
     return isoCodeGroups.some(group => group.includes(team1) && group.includes(team2));
 };
@@ -125,8 +133,6 @@ const simulateTournament = (quarterFinalPairs) => {
         [semiFinalists[2], semiFinalists[3]],
     ];
 
-    console.log(semiFinalPairs);
-
     console.log("\nPolufinale:");
     const finalists = simulateEliminationRound(semiFinalPairs);
 
@@ -146,6 +152,7 @@ const simulateTournament = (quarterFinalPairs) => {
 
 module.exports = {
     assignTeamsToBuckets,
+    prepareEliminationPhase,
     generateQuarterFinalPairs,
     generateSemiFinalPairs,
     displayEliminationPhase,

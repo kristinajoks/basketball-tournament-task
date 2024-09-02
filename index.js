@@ -37,18 +37,7 @@ displayGroupStandings(groups, simulatedResults);
 const finalRanking = calculateFinalRanking(groups, simulatedResults);
 displayFinalStandings(finalRanking);
 
-const extractISOCodeGroups = (groups) => {
-    return Object.keys(groups).map(group => 
-        groups[group].map(team => team.ISOCode)  
-    );
-};
-const isoCodeGroups = extractISOCodeGroups(groups);
-
-const buckets = assignTeamsToBuckets(finalRanking);
-
-console.log("Šeširi:");
-console.log(buckets);
-
+const { isoCodeGroups, buckets } = prepareEliminationPhase(groups, finalRanking, assignTeamsToBuckets);
 const quarterFinalPairs = generateQuarterFinalPairs(buckets, isoCodeGroups);
 const semiFinalPairs = generateSemiFinalPairs(quarterFinalPairs);
 
