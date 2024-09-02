@@ -22,6 +22,16 @@ const generateRounds = (teamsInGroup) => {
     return rounds;
 }
 
+
+const generateRoundsForGroups = (groups) => {
+    const groupRounds = {};
+    for (const group in groups) {
+        groupRounds[group] = generateRounds(groups[group].map(team => team.ISOCode));
+    }
+    return groupRounds;
+};
+
 module.exports = {
-    generateRounds
+    generateRounds,
+    generateRoundsForGroups
 };

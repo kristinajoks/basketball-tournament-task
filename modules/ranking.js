@@ -1,35 +1,33 @@
 const { groupPoints } = require('./points');
 
-
-const rankTeamsInGroup = (group) => {
+const rankTeamsInGroup = (group, simulatedResults) => {
     const teams = Object.values(groupPoints[group]);
 
     teams.sort((a, b) => {
         if (a.points !== b.points) return b.points - a.points;
-        
+
         const tiedTeams = teams.filter(team => team.points === a.points);
 
         if (tiedTeams.length === 2) {
-            return calculateMatchDifference(a, b);
+            return calculateMatchDifference(a, b, simulatedResults, group);
         } 
         else if (tiedTeams.length > 2) {
-            const rankedTeams = calculateCircleFormationRanking(tiedTeams, group);
+            const rankedTeams = calculateCircleFormationRanking(tiedTeams, simulatedResults, group);
             const indexA = rankedTeams.findIndex(d => d.team === a.name);
             const indexB = rankedTeams.findIndex(d => d.team === b.name);
             return indexA - indexB;
         }
-
     });
     return teams;
 };
 
-const calculateCircleFormationRanking = (tiedTeams, group) => {
+const calculateCircleFormationRanking = (tiedTeams, simulatedResults, group) => {
     const differences = tiedTeams.map(team => {
         const otherTeams = tiedTeams.filter(t => t !== team);
         let totalDifference = 0;
 
         otherTeams.forEach(other => {
-            const matchDiff = calculateMatchDifference(team, other, group);
+            const matchDiff = calculateMatchDifference(team, other, simulatedResults, group);
             totalDifference += matchDiff;
         });
 
@@ -41,7 +39,7 @@ const calculateCircleFormationRanking = (tiedTeams, group) => {
     return differences;
 };
 
-const calculateMatchDifference = (a, b) =>{
+const calculateMatchDifference = (a, b, simulatedResults, group) => {
     let matchResult = null;
 
     for (const round in simulatedResults[group]) {
@@ -68,14 +66,13 @@ const calculateMatchDifference = (a, b) =>{
     }
 
     return 0;
-}
+};
 
-const calculateFinalRanking = (groups) => {
-    const topTeams = calculateGroupsOnPosition(0, groups);
-    const secondPlaceTeams = calculateGroupsOnPosition(1, groups);
-    const thirdPlaceTeams = calculateGroupsOnPosition(2, groups);
+const calculateFinalRanking = (groups, simulatedResults) => {
+    const topTeams = calculateGroupsOnPosition(0, groups, simulatedResults);
+    const secondPlaceTeams = calculateGroupsOnPosition(1, groups, simulatedResults);
+    const thirdPlaceTeams = calculateGroupsOnPosition(2, groups, simulatedResults);
 
-    
     const rankTeams = (teams) => {
         return teams.sort((a, b) => {
             if (a.points !== b.points) return b.points - a.points;
@@ -100,13 +97,13 @@ const calculateFinalRanking = (groups) => {
     return finalRanking;
 };
 
-const calculateGroupsOnPosition = (position, groups) => {
+const calculateGroupsOnPosition = (position, groups, simulatedResults) => {
     const teams = [];
     for(const group in groups){
-        teams.push(rankTeamsInGroup(group)[position]);
+        teams.push(rankTeamsInGroup(group, simulatedResults)[position]);
     }
     return teams;
-}
+};
 
 module.exports = {
     rankTeamsInGroup,
